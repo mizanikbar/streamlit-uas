@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -71,16 +70,16 @@ elif page == "📊 Classification":
 
 # --- Clustering Page ---
 elif page == "📈 Clustering":
-    st.title("Clustering Lokasi Gerai Kopi")
-    st.write("Proyek ini menggunakan K-Means untuk mengelompokkan lokasi gerai kopi berdasarkan koordinat.")
+    st.title("Clustering Pelanggan Berdasarkan Income dan Spend Score")
+    st.write("Proyek ini menggunakan K-Means untuk mengelompokkan pelanggan berdasarkan pendapatan dan skor belanja.")
 
-    # Load data lokasi
+    # Load data pelanggan
     data = pd.read_csv("lokasi_gerai_kopi_clean.csv")
     st.write("### Data Sample")
     st.dataframe(data.head())
 
-    # Ambil kolom lokasi
-    X = data[["x", "y"]]
+    # Ambil kolom income dan spend_score
+    X = data[["income", "spend_score"]]
     kmeans = KMeans(n_clusters=3, random_state=42, n_init='auto')
     clusters = kmeans.fit_predict(X)
     data["Cluster"] = clusters
@@ -88,13 +87,13 @@ elif page == "📈 Clustering":
     # Visualisasi Clustering
     st.write("### Visualisasi Clustering")
     fig, ax = plt.subplots()
-    sns.scatterplot(x="x", y="y", hue="Cluster", palette="tab10", data=data, ax=ax)
+    sns.scatterplot(x="income", y="spend_score", hue="Cluster", palette="tab10", data=data, ax=ax)
     st.pyplot(fig)
 
-    # Input Lokasi Baru
-    st.write("### Prediksi Cluster Lokasi Baru")
-    x_new = st.number_input("Masukkan koordinat X", value=float(X["x"].mean()))
-    y_new = st.number_input("Masukkan koordinat Y", value=float(X["y"].mean()))
+    # Input Data Baru
+    st.write("### Prediksi Cluster Pelanggan Baru")
+    income_new = st.number_input("Masukkan pendapatan (income)", value=float(X["income"].mean()))
+    score_new = st.number_input("Masukkan skor belanja (spend_score)", value=float(X["spend_score"].mean()))
     if st.button("Prediksi Cluster"):
-        new_cluster = kmeans.predict([[x_new, y_new]])[0]
-        st.success(f"Lokasi baru masuk ke dalam Cluster {new_cluster}")
+        new_cluster = kmeans.predict([[income_new, score_new]])[0]
+        st.success(f"Pelanggan baru masuk ke dalam Cluster {new_cluster}")
